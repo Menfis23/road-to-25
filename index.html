@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Road to 25</title>
+<meta name="theme-color" content="#0b1430">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --gold:#f6c453; --gold-deep:#e08a1e;
+    --teal:#4fd1c5; --teal-deep:#1e9e8f;
+    --ink:#101a38; --muted:#5b6585;
+    --card:rgba(255,255,255,.94);
+    --night:#0b1430;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:'Outfit',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    color:#fff;min-height:100vh;
+    background:
+      radial-gradient(1px 1px at 12% 4%,#fff9 50%,transparent 51%),
+      radial-gradient(1.5px 1.5px at 78% 7%,#fffb 50%,transparent 51%),
+      radial-gradient(1px 1px at 55% 11%,#fff8 50%,transparent 51%),
+      radial-gradient(1px 1px at 30% 17%,#fff7 50%,transparent 51%),
+      radial-gradient(1.5px 1.5px at 90% 22%,#fff9 50%,transparent 51%),
+      radial-gradient(1px 1px at 5% 28%,#fff6 50%,transparent 51%),
+      linear-gradient(180deg,#0b1430 0%,#152257 30%,#33296b 55%,#7a3a78 72%,#d0566a 86%,#f7a04b 96%,#ffd27a 100%);
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font-family:inherit}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:20;
+    background:rgba(11,20,48,.78);
+    backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+  }
+  .head-inner{max-width:900px;margin:0 auto;padding:14px 18px 12px}
+  .title-row{display:flex;align-items:center;justify-content:space-between;gap:12px}
+  h1{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em}
+  h1 span{background:linear-gradient(90deg,var(--gold),#ff8f6b);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .goal-line{font-size:12.5px;color:#c9d0ec;margin-top:2px}
+  .add-btn{
+    border:none;cursor:pointer;white-space:nowrap;
+    background:linear-gradient(135deg,var(--gold),#ff9f43);color:#3a2300;
+    font-weight:700;font-size:14px;padding:9px 14px;border-radius:999px;
+    box-shadow:0 6px 18px rgba(246,196,83,.35);
+  }
+  .add-btn:active{transform:scale(.97)}
+  .progress{margin-top:12px;height:10px;border-radius:999px;background:rgba(255,255,255,.12);overflow:hidden}
+  .progress-fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--teal),var(--gold),#ff8f6b);transition:width .8s cubic-bezier(.2,.8,.2,1)}
+  .stats{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-size:12.5px;color:#c9d0ec;flex-wrap:wrap}
+  .stats b{color:#fff}
+
+  /* ---------- Road ---------- */
+  .road-wrap{position:relative;max-width:900px;margin:0 auto;overflow:hidden}
+  .road-wrap svg{position:absolute;inset:0 auto auto 0;display:block}
+  .start-pill{
+    position:absolute;transform:translate(-50%,-50%);z-index:3;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);
+    padding:7px 14px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.08em;
+    backdrop-filter:blur(6px);white-space:nowrap;
+  }
+  .sun{
+    position:absolute;left:50%;transform:translateX(-50%);
+    width:520px;height:520px;border-radius:50%;pointer-events:none;
+    background:radial-gradient(circle,rgba(255,230,150,.85) 0%,rgba(255,170,90,.35) 35%,transparent 68%);
+  }
+  .tree{position:absolute;transform:translate(-50%,-50%);font-size:26px;opacity:.45;pointer-events:none;filter:saturate(.6)}
+
+  .stop{
+    position:absolute;transform:translate(-50%,-50%);z-index:4;
+    width:64px;height:64px;border-radius:50%;border:none;cursor:pointer;
+    display:grid;place-items:center;font-size:30px;line-height:1;
+    background:#272e4d;
+    box-shadow:0 0 0 4px rgba(255,255,255,.14),0 10px 24px rgba(0,0,0,.35);
+    transition:transform .2s, box-shadow .3s, background .3s;
+  }
+  .stop:hover{transform:translate(-50%,-50%) scale(1.07)}
+  .stop .emo{filter:grayscale(.75);opacity:.6;transition:filter .3s,opacity .3s}
+  .stop.giving{box-shadow:0 0 0 4px rgba(79,209,197,.35),0 10px 24px rgba(0,0,0,.35)}
+  .stop.done{background:radial-gradient(circle at 35% 30%,#fff1c2,var(--gold) 45%,var(--gold-deep));box-shadow:0 0 0 4px rgba(255,255,255,.35),0 0 30px rgba(246,196,83,.7)}
+  .stop.giving.done{background:radial-gradient(circle at 35% 30%,#d6fffa,var(--teal) 45%,var(--teal-deep));box-shadow:0 0 0 4px rgba(255,255,255,.35),0 0 30px rgba(79,209,197,.7)}
+  .stop.done .emo{filter:none;opacity:1}
+  .stop.goal{width:86px;height:86px;font-size:42px}
+  .stop.next::after{
+    content:"";position:absolute;inset:-10px;border-radius:50%;
+    border:3px solid rgba(255,255,255,.8);animation:pulse 1.8s ease-out infinite;
+  }
+  @keyframes pulse{0%{transform:scale(.85);opacity:.9}100%{transform:scale(1.35);opacity:0}}
+  .check{
+    position:absolute;right:-4px;bottom:-4px;width:24px;height:24px;border-radius:50%;
+    background:#fff;color:#16a34a;font-size:14px;font-weight:800;display:grid;place-items:center;
+    box-shadow:0 2px 6px rgba(0,0,0,.3)
+  }
+
+  .card{
+    position:absolute;transform:translateY(-50%);z-index:3;cursor:pointer;
+    background:var(--card);color:var(--ink);border-radius:16px;padding:10px 13px 11px;
+    box-shadow:0 12px 30px rgba(5,10,30,.35);
+    transition:transform .2s,opacity .3s;
+  }
+  .card:hover{transform:translateY(-50%) translateY(-2px)}
+  .card.upcoming{opacity:.8}
+  .card .row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .chip{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.02em}
+  .chip.age{background:#101a38;color:#fff}
+  .chip.money{background:#fff3d1;color:#8a5a00}
+  .chip.giving{background:#d7f7f3;color:#0d7266}
+  .chip.next{background:#ff8f6b;color:#fff}
+  .card h3{margin:5px 0 0;font-size:15px;line-height:1.25;font-weight:700}
+  .card .meta{margin-top:5px;font-size:12px;color:var(--muted)}
+  .card.done h3{color:#0f5132}
+
+  .plus{
+    position:absolute;transform:translate(-50%,-50%);z-index:3;
+    width:28px;height:28px;border-radius:50%;border:2px dashed rgba(255,255,255,.55);
+    background:rgba(11,20,48,.6);color:#fff;font-size:17px;font-weight:700;line-height:1;cursor:pointer;
+    opacity:.55;transition:opacity .2s,transform .2s;
+  }
+  .plus:hover,.plus:focus-visible{opacity:1;transform:translate(-50%,-50%) scale(1.12)}
+
+  footer{max-width:900px;margin:0 auto;padding:10px 18px 40px;text-align:center;color:#3a2300}
+  footer .tools{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .ghost{
+    border:1px solid rgba(58,35,0,.35);background:rgba(255,255,255,.45);color:#3a2300;
+    font-weight:600;font-size:13px;padding:8px 13px;border-radius:999px;cursor:pointer
+  }
+  footer p{font-size:12.5px;margin:12px 0 0;opacity:.8}
+  .backup-box{display:none;margin:12px auto 0;max-width:520px;text-align:left}
+  .backup-box textarea{width:100%;height:110px;border-radius:12px;border:1px solid #0002;padding:10px;font:12px/1.4 ui-monospace,monospace;color:var(--ink)}
+  .backup-box .tools{justify-content:flex-start;margin-top:6px}
+
+  /* ---------- Sheet (stop details) ---------- */
+  .scrim{position:fixed;inset:0;background:rgba(5,10,30,.5);opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
+  .scrim.show{opacity:1;pointer-events:auto}
+  .sheet{
+    position:fixed;z-index:31;left:0;right:0;bottom:0;max-height:88vh;overflow:auto;
+    background:#fff;color:var(--ink);border-radius:24px 24px 0 0;
+    transform:translateY(105%);transition:transform .32s cubic-bezier(.2,.8,.2,1);
+    padding:10px 20px 28px;box-shadow:0 -20px 50px rgba(0,0,0,.35);
+  }
+  .sheet.show{transform:translateY(0)}
+  @media (min-width:900px){
+    .sheet{left:auto;top:0;width:420px;max-height:none;border-radius:24px 0 0 24px;transform:translateX(105%);padding-top:22px}
+    .sheet.show{transform:translateX(0)}
+    .grab{display:none}
+  }
+  .grab{width:44px;height:5px;border-radius:9px;background:#d5d9e6;margin:0 auto 12px}
+  .sheet-top{display:flex;align-items:flex-start;gap:14px}
+  .big-icon{
+    flex:none;width:64px;height:64px;border-radius:18px;border:none;cursor:pointer;
+    font-size:34px;display:grid;place-items:center;background:#f2f4fa;
+  }
+  .big-icon.done{background:linear-gradient(135deg,#fff1c2,var(--gold))}
+  .big-icon.giving.done{background:linear-gradient(135deg,#d6fffa,var(--teal))}
+  .close{margin-left:auto;border:none;background:#f2f4fa;width:34px;height:34px;border-radius:50%;font-size:18px;cursor:pointer;color:var(--ink);flex:none}
+  .field{display:block;margin-top:12px}
+  .field span{display:block;font-size:12px;font-weight:600;color:var(--muted);margin-bottom:4px}
+  .field input,.field textarea,.field select{
+    width:100%;font:inherit;font-size:15px;color:var(--ink);
+    border:1.5px solid #e2e6f0;border-radius:12px;padding:10px 12px;background:#fafbff;outline:none;
+  }
+  .field input:focus,.field textarea:focus,.field select:focus{border-color:#8b9cf0;background:#fff}
+  .title-input{font-size:18px!important;font-weight:700}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .seg{display:flex;background:#f2f4fa;border-radius:12px;padding:3px}
+  .seg button{flex:1;border:none;background:none;padding:8px;border-radius:9px;font-weight:600;font-size:13.5px;cursor:pointer;color:var(--muted)}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:0 2px 6px rgba(0,0,0,.08)}
+  .icons{display:none;grid-template-columns:repeat(8,1fr);gap:6px;margin-top:10px}
+  .icons.show{display:grid}
+  .icons button{border:none;background:#f2f4fa;border-radius:10px;font-size:22px;padding:6px 0;cursor:pointer}
+  .icons button.on{background:#ffe9b0}
+  .reach{
+    width:100%;margin-top:16px;border:none;cursor:pointer;border-radius:14px;padding:14px;
+    font-weight:700;font-size:16px;color:#3a2300;
+    background:linear-gradient(135deg,var(--gold),#ff9f43);box-shadow:0 8px 20px rgba(246,196,83,.4)
+  }
+  .reach.giving{background:linear-gradient(135deg,#7ee8dd,var(--teal));color:#053b35;box-shadow:0 8px 20px rgba(79,209,197,.4)}
+  .reach.done{background:#eefaf2;color:#166534;box-shadow:none;border:1.5px solid #bbe7c9}
+  h4{margin:22px 0 2px;font-size:16px}
+  .hint{font-size:12.5px;color:var(--muted);margin:0}
+  .entry-add{display:flex;gap:8px;margin-top:10px;align-items:flex-end}
+  .entry-add textarea{flex:1;min-height:64px;resize:vertical;font:inherit;font-size:14.5px;border:1.5px solid #e2e6f0;border-radius:12px;padding:10px 12px;background:#fafbff;color:var(--ink);outline:none}
+  .entry-add textarea:focus{border-color:#8b9cf0;background:#fff}
+  .entry-add button{border:none;background:var(--ink);color:#fff;font-weight:700;border-radius:12px;padding:12px 14px;cursor:pointer}
+  .entries{list-style:none;margin:12px 0 0;padding:0;position:relative}
+  .entries li{position:relative;padding:10px 34px 10px 18px;border-left:2px solid #e2e6f0;margin-left:6px}
+  .entries li::before{content:"";position:absolute;left:-7px;top:15px;width:12px;height:12px;border-radius:50%;background:var(--gold);border:2px solid #fff;box-shadow:0 0 0 1px #e2c27a}
+  .entries time{font-size:11.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .entries p{margin:3px 0 0;font-size:14.5px;line-height:1.45;white-space:pre-wrap;word-wrap:break-word}
+  .entries .del{position:absolute;right:0;top:8px;border:none;background:none;color:#a3abc4;font-size:18px;cursor:pointer}
+  .empty{font-size:13.5px;color:var(--muted);margin-top:10px;font-style:italic}
+  .danger{margin-top:26px;border:none;background:none;color:#c2410c;font-weight:600;font-size:13.5px;cursor:pointer;padding:6px 0}
+
+  /* ---------- Add-stop modal ---------- */
+  .modal{
+    position:fixed;z-index:41;left:50%;top:50%;width:min(440px,calc(100vw - 28px));max-height:90vh;overflow:auto;
+    transform:translate(-50%,-46%) scale(.97);opacity:0;pointer-events:none;transition:all .25s;
+    background:#fff;color:var(--ink);border-radius:22px;padding:20px;box-shadow:0 30px 70px rgba(0,0,0,.45)
+  }
+  .modal.show{opacity:1;pointer-events:auto;transform:translate(-50%,-50%) scale(1)}
+  .modal h2{margin:0;font-size:20px}
+  .modal .scrim{z-index:40}
+  #modalScrim{z-index:40}
+
+  .toast{
+    position:fixed;left:50%;bottom:26px;transform:translate(-50%,30px);opacity:0;z-index:50;
+    background:#101a38;color:#fff;padding:11px 18px;border-radius:999px;font-weight:600;font-size:14px;
+    transition:all .3s;pointer-events:none;box-shadow:0 10px 30px rgba(0,0,0,.35);white-space:nowrap
+  }
+  .toast.show{opacity:1;transform:translate(-50%,0)}
+  .confetti{position:fixed;width:9px;height:14px;z-index:60;pointer-events:none;border-radius:2px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="head-inner">
+    <div class="title-row">
+      <div>
+        <h1>Road to <span>25</span></h1>
+        <div class="goal-line">$10,000 a month · financial freedom · helping others</div>
+      </div>
+      <button class="add-btn" id="addBtn">+ Add stop</button>
+    </div>
+    <div class="progress"><div class="progress-fill" id="progFill"></div></div>
+    <div class="stats">
+      <span id="statDone"></span>
+      <span id="statNext"></span>
+    </div>
+  </div>
+</header>
+
+<main class="road-wrap" id="road"></main>
+
+<footer>
+  <div class="tools">
+    <button class="ghost" id="backupBtn">Back up my road</button>
+    <button class="ghost" id="restoreBtn">Restore</button>
+    <button class="ghost" id="resetBtn">Reset road</button>
+  </div>
+  <div class="backup-box" id="backupBox">
+    <textarea id="backupText" spellcheck="false"></textarea>
+    <div class="tools">
+      <button class="ghost" id="backupAction">Copy</button>
+      <button class="ghost" id="backupClose">Close</button>
+    </div>
+  </div>
+  <p>Your progress saves in this browser. Back it up now and then so you never lose it.</p>
+</footer>
+
+<!-- Stop details -->
+<div class="scrim" id="scrim"></div>
+<aside class="sheet" id="sheet" aria-hidden="true">
+  <div class="grab"></div>
+  <div class="sheet-top">
+    <button class="big-icon" id="sIcon" title="Change icon"></button>
+    <div style="flex:1;min-width:0">
+      <div class="row" style="display:flex;gap:6px;flex-wrap:wrap" id="sChips"></div>
+      <label class="field" style="margin-top:6px"><textarea class="title-input" id="sTitle" rows="2" style="resize:none;line-height:1.25" aria-label="Stop name"></textarea></label>
+    </div>
+    <button class="close" id="sClose" aria-label="Close">✕</button>
+  </div>
+  <div class="icons" id="sIcons"></div>
+  <div class="two">
+    <label class="field"><span>Age</span><input id="sAge" placeholder="e.g. 20"></label>
+    <div class="field"><span>Type</span>
+      <div class="seg" id="sType">
+        <button data-t="money">💰 Money</button>
+        <button data-t="giving">💛 Giving</button>
+      </div>
+    </div>
+  </div>
+  <button class="reach" id="sReach"></button>
+
+  <h4>Journal</h4>
+  <p class="hint">What did you do at this stop? Clients landed, sites built, wins, lessons.</p>
+  <div class="entry-add">
+    <textarea id="sEntry" placeholder="Today I…"></textarea>
+    <button id="sEntryAdd">Add</button>
+  </div>
+  <ul class="entries" id="sEntries"></ul>
+
+  <button class="danger" id="sDelete">Remove this stop</button>
+</aside>
+
+<!-- Add stop -->
+<div class="scrim" id="modalScrim"></div>
+<form class="modal" id="modal" autocomplete="off">
+  <h2>Add a stop</h2>
+  <label class="field"><span>What's the goal?</span><input id="mTitle" placeholder="e.g. Land 3 nonprofit clients" required></label>
+  <div class="two">
+    <label class="field"><span>Age</span><input id="mAge" placeholder="e.g. 19"></label>
+    <div class="field"><span>Type</span>
+      <div class="seg" id="mType">
+        <button type="button" data-t="money" class="on">💰 Money</button>
+        <button type="button" data-t="giving">💛 Giving</button>
+      </div>
+    </div>
+  </div>
+  <div class="field"><span>Icon</span></div>
+  <div class="icons show" id="mIcons"></div>
+  <label class="field"><span>Put it after</span><select id="mAfter"></select></label>
+  <div style="display:flex;gap:8px;margin-top:18px">
+    <button type="button" class="ghost" id="mCancel" style="flex:1;color:var(--ink)">Cancel</button>
+    <button type="submit" class="reach" style="flex:2;margin:0">Add to my road</button>
+  </div>
+</form>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  const KEY = 'roadTo25.v1';
+  const ICONS = ['🤝','💻','🙏','🔁','💵','🌱','📈','👥','🏡','🚀','🏁','💼','🎓','📚','🧠','🏆','💡','🌍','❤️','🎯','📱','🏦','✈️','⭐'];
+
+  const DEFAULT_STOPS = [
+    {title:'Land my first paying Halvora client', age:'18', type:'money', icon:'🤝'},
+    {title:'Finish my portfolio site', age:'18', type:'money', icon:'💻'},
+    {title:'Start giving regularly', age:'18–19', type:'giving', icon:'🙏'},
+    {title:'Have clients paying me every month', age:'19', type:'money', icon:'🔁'},
+    {title:'Make $2,000 a month and start saving', age:'20', type:'money', icon:'💵'},
+    {title:'Grow Valore Talent', age:'20–21', type:'giving', icon:'🌱'},
+    {title:'Reach about $5,000 a month', age:'21–22', type:'money', icon:'📈'},
+    {title:'Hire my first helper', age:'22', type:'money', icon:'👥'},
+    {title:'Help refugee & immigrant families find jobs', age:'22–23', type:'giving', icon:'🏡'},
+    {title:'Get Halvora past $10,000 a month', age:'23–24', type:'money', icon:'🚀'},
+    {title:'Pay myself $10,000 a month', age:'25', type:'money', icon:'🏁'}
+  ];
+
+  const uid = () => Math.random().toString(36).slice(2,10);
+  const fresh = () => ({stops: DEFAULT_STOPS.map(s => ({...s, id:uid(), done:false, doneDate:null, journal:[]}))});
+
+  // ---------- Storage (wrapped in try/catch: some browsers block it) ----------
+  function load(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(raw){ const d = JSON.parse(raw); if(d && Array.isArray(d.stops)) return d; }
+    }catch(e){}
+    return fresh();
+  }
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+  let state = load();
+  let openId = null;
+
+  // ---------- Helpers ----------
+  const $ = id => document.getElementById(id);
+  function el(tag, cls, text){ const n=document.createElement(tag); if(cls) n.className=cls; if(text!=null) n.textContent=text; return n; }
+  const fmtDate = iso => new Date(iso).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+  function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>t.classList.remove('show'),2200); }
+  const nextIndex = () => state.stops.findIndex(s => !s.done);
+
+  // ---------- Draw the road ----------
+  function render(){
+    const road = $('road');
+    road.innerHTML = '';
+    const W = road.clientWidth;
+    const n = state.stops.length;
+    const gap = W < 600 ? 200 : 220;
+    const top = 170;
+    const H = top + Math.max(0,n-1)*gap + 230;
+    road.style.height = H + 'px';
+
+    // Where each stop sits: zig-zag left / right
+    const pts = state.stops.map((s,i) => ({x: W*(i%2===0 ? .27 : .73), y: top + i*gap}));
+    const start = {x: W/2, y: 58};
+    const all = [start, ...pts];
+
+    // Sunrise glow behind the final stop
+    const sun = el('div','sun'); sun.style.top = (H-330)+'px'; road.appendChild(sun);
+
+    // Decorative trees on the outside edges
+    pts.forEach((p,i) => {
+      const t = el('div','tree', i%3===0 ? '🌳' : '🌲');
+      t.style.left = (i%2===0 ? W*.07 : W*.93) + 'px';
+      t.style.top = (p.y + gap*.5) + 'px';
+      if(i < n-1) road.appendChild(t);
+    });
+
+    // S-curve between two points (cubic Bézier)
+    const seg = (a,b) => { const dy=b.y-a.y; return `C${a.x},${a.y+dy*.5} ${b.x},${b.y-dy*.5} ${b.x},${b.y}`; };
+    let d = `M${start.x},${start.y}`;
+    for(let i=1;i<all.length;i++) d += ' ' + seg(all[i-1], all[i]);
+
+    const NS='http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(NS,'svg');
+    svg.setAttribute('width',W); svg.setAttribute('height',H); svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+    svg.innerHTML = `
+      <defs>
+        <linearGradient id="lit" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#4fd1c5"/><stop offset=".5" stop-color="#f6c453"/><stop offset="1" stop-color="#ff8f6b"/>
+        </linearGradient>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+      </defs>`;
+    const path = (dd, attrs) => { const p=document.createElementNS(NS,'path'); p.setAttribute('d',dd); p.setAttribute('fill','none'); p.setAttribute('stroke-linecap','round'); for(const k in attrs) p.setAttribute(k,attrs[k]); svg.appendChild(p); return p; };
+
+    path(d,{stroke:'rgba(0,0,0,.35)','stroke-width':58});
+    path(d,{stroke:'#2d3350','stroke-width':48});
+
+    // Light up the road up to the furthest stop in a row that's done
+    let litUpTo = 0;
+    while(litUpTo < n && state.stops[litUpTo].done) litUpTo++;
+    if(litUpTo > 0){
+      let ld = `M${start.x},${start.y}`;
+      for(let i=1;i<=litUpTo;i++) ld += ' ' + seg(all[i-1], all[i]);
+      path(ld,{stroke:'url(#lit)','stroke-width':40,opacity:.55,filter:'url(#glow)'});
+      path(ld,{stroke:'url(#lit)','stroke-width':34,opacity:.9});
+    }
+    path(d,{stroke:'rgba(255,255,255,.75)','stroke-width':3,'stroke-dasharray':'14 16'});
+    road.appendChild(svg);
+
+    // Start marker
+    const sp = el('div','start-pill','START · AGE 18');
+    sp.style.left=start.x+'px'; sp.style.top=start.y+'px'; road.appendChild(sp);
+
+    const ni = nextIndex();
+
+    state.stops.forEach((s,i) => {
+      const p = pts[i];
+      const isGoal = i === n-1;
+
+      // The circle on the road
+      const b = el('button', `stop ${s.type}${s.done?' done':''}${isGoal?' goal':''}${i===ni?' next':''}`);
+      b.style.left=p.x+'px'; b.style.top=p.y+'px';
+      b.setAttribute('aria-label', s.title);
+      b.appendChild(el('span','emo',s.icon));
+      if(s.done) b.appendChild(el('span','check','✓'));
+      b.onclick = () => openSheet(s.id);
+      road.appendChild(b);
+
+      // The label card next to it
+      const c = el('div', `card ${s.done?'done':'upcoming'}`);
+      const left = i%2===0;
+      const off = (isGoal ? 56 : 46);
+      if(left){ c.style.left=(p.x+off)+'px'; c.style.maxWidth=Math.min(300, W-p.x-off-12)+'px'; }
+      else    { c.style.right=(W-p.x+off)+'px'; c.style.maxWidth=Math.min(300, p.x-off-12)+'px'; }
+      c.style.top=p.y+'px';
+      const row = el('div','row');
+      if(s.age) row.appendChild(el('span','chip age','Age '+s.age));
+      row.appendChild(el('span','chip '+s.type, s.type==='giving'?'💛 Giving':'💰 Money'));
+      if(i===ni) row.appendChild(el('span','chip next','Next'));
+      c.appendChild(row);
+      c.appendChild(el('h3',null,s.title));
+      const bits = [];
+      if(s.done && s.doneDate) bits.push('✓ Reached '+fmtDate(s.doneDate));
+      if(s.journal.length) bits.push('📝 '+s.journal.length+(s.journal.length===1?' entry':' entries'));
+      if(bits.length) c.appendChild(el('div','meta',bits.join(' · ')));
+      c.onclick = () => openSheet(s.id);
+      road.appendChild(c);
+
+      // A small + between this stop and the next
+      if(i < n-1){
+        const q = pts[i+1];
+        const plus = el('button','plus','+');
+        plus.title = 'Add a stop here';
+        plus.style.left=((p.x+q.x)/2)+'px'; plus.style.top=((p.y+q.y)/2)+'px';
+        plus.onclick = () => openModal(i);
+        road.appendChild(plus);
+      }
+    });
+
+    // Header stats
+    const done = state.stops.filter(s=>s.done).length;
+    const giving = state.stops.filter(s=>s.done && s.type==='giving').length;
+    const pct = n ? Math.round(done/n*100) : 0;
+    $('progFill').style.width = pct+'%';
+    $('statDone').innerHTML = `<b>${done}</b> of ${n} stops · <b>${pct}%</b> · 💛 ${giving} giving`;
+    $('statNext').textContent = ni>=0 ? 'Next: '+state.stops[ni].title : '🎉 You made it to 25!';
+  }
+
+  // ---------- Stop details sheet ----------
+  const find = id => state.stops.find(s=>s.id===id);
+
+  function openSheet(id){
+    openId = id; fillSheet();
+    $('sIcons').classList.remove('show');
+    $('scrim').classList.add('show'); $('sheet').classList.add('show'); $('sheet').setAttribute('aria-hidden','false');
+  }
+  function closeSheet(){
+    openId = null;
+    $('scrim').classList.remove('show'); $('sheet').classList.remove('show'); $('sheet').setAttribute('aria-hidden','true');
+    resetDelete();
+  }
+  function fillSheet(){
+    const s = find(openId); if(!s) return;
+    const icon = $('sIcon'); icon.textContent = s.icon; icon.className = `big-icon ${s.type}${s.done?' done':''}`;
+    const chips = $('sChips'); chips.innerHTML='';
+    chips.appendChild(el('span','chip '+s.type, s.type==='giving'?'💛 Giving back':'💰 Money'));
+    if(s.done) chips.appendChild(el('span','chip age','✓ Reached'));
+    $('sTitle').value = s.title;
+    $('sAge').value = s.age || '';
+    [...$('sType').children].forEach(b => b.classList.toggle('on', b.dataset.t===s.type));
+    const r = $('sReach');
+    r.className = `reach ${s.type}${s.done?' done':''}`;
+    r.textContent = s.done ? `✓ Reached on ${fmtDate(s.doneDate)} · tap to undo` : 'I reached this stop!';
+    fillIcons($('sIcons'), s.icon, ic => { s.icon=ic; save(); fillSheet(); render(); });
+    const list = $('sEntries'); list.innerHTML='';
+    if(!s.journal.length) list.appendChild(el('li','empty','No entries yet. Your first one starts the story.')).style.borderLeft='none';
+    [...s.journal].reverse().forEach(e => {
+      const li = el('li');
+      li.appendChild(el('time',null,fmtDate(e.date)));
+      li.appendChild(el('p',null,e.text));
+      const del = el('button','del','×'); del.title='Delete entry';
+      del.onclick = () => { s.journal = s.journal.filter(x=>x.id!==e.id); save(); fillSheet(); render(); };
+      li.appendChild(del);
+      list.appendChild(li);
+    });
+    $('sDelete').style.display = state.stops.length > 1 ? '' : 'none';
+  }
+  function fillIcons(box, current, onPick){
+    box.innerHTML='';
+    ICONS.forEach(ic => {
+      const b = el('button', ic===current?'on':'', ic); b.type='button';
+      b.onclick = () => onPick(ic);
+      box.appendChild(b);
+    });
+  }
+
+  $('sClose').onclick = closeSheet;
+  $('scrim').onclick = closeSheet;
+  $('sIcon').onclick = () => $('sIcons').classList.toggle('show');
+  $('sTitle').oninput = e => { const s=find(openId); s.title=e.target.value || 'Untitled stop'; save(); render(); };
+  $('sAge').oninput = e => { const s=find(openId); s.age=e.target.value.trim(); save(); render(); };
+  [...$('sType').children].forEach(b => b.onclick = () => { const s=find(openId); s.type=b.dataset.t; save(); fillSheet(); render(); });
+
+  $('sReach').onclick = () => {
+    const s = find(openId);
+    s.done = !s.done;
+    s.doneDate = s.done ? new Date().toISOString() : null;
+    save(); fillSheet(); render();
+    if(s.done){
+      confetti(s.type);
+      toast(s === state.stops[state.stops.length-1] ? '🏁 You made it. Road to 25: complete!' : `${s.icon} Stop reached! Write what you did below.`);
+    }
+  };
+  function addEntry(){
+    const s = find(openId); const t = $('sEntry').value.trim();
+    if(!t) return;
+    s.journal.push({id:uid(), date:new Date().toISOString(), text:t});
+    $('sEntry').value=''; save(); fillSheet(); render(); toast('📝 Saved to your journal');
+  }
+  $('sEntryAdd').onclick = addEntry;
+  $('sEntry').onkeydown = e => { if(e.key==='Enter' && (e.metaKey||e.ctrlKey)) addEntry(); };
+
+  // Two-tap delete (pop-up confirm boxes are blocked in some places, so we confirm in the button)
+  function resetDelete(){ const d=$('sDelete'); d.dataset.armed=''; d.textContent='Remove this stop'; }
+  $('sDelete').onclick = () => {
+    const d = $('sDelete');
+    if(!d.dataset.armed){ d.dataset.armed='1'; d.textContent='Tap again to remove it for good'; return; }
+    state.stops = state.stops.filter(s=>s.id!==openId); save(); closeSheet(); render(); toast('Stop removed');
+  };
+
+  // ---------- Add-stop modal ----------
+  let mType='money', mIcon='🎯';
+  function openModal(afterIndex){
+    $('mTitle').value=''; $('mAge').value='';
+    mType='money'; mIcon='🎯';
+    [...$('mType').children].forEach(b=>b.classList.toggle('on', b.dataset.t===mType));
+    drawModalIcons();
+    const sel = $('mAfter'); sel.innerHTML='';
+    const o0 = el('option',null,'The start (before everything)'); o0.value=-1; sel.appendChild(o0);
+    state.stops.forEach((s,i)=>{ const o=el('option',null,`${s.icon} ${s.title}`); o.value=i; sel.appendChild(o); });
+    sel.value = afterIndex==null ? Math.max(-1, state.stops.length-2) : afterIndex;
+    $('modalScrim').classList.add('show'); $('modal').classList.add('show');
+    setTimeout(()=>$('mTitle').focus(),150);
+  }
+  function closeModal(){ $('modalScrim').classList.remove('show'); $('modal').classList.remove('show'); }
+  function drawModalIcons(){ fillIcons($('mIcons'), mIcon, ic => { mIcon=ic; drawModalIcons(); }); }
+  [...$('mType').children].forEach(b => b.onclick = () => { mType=b.dataset.t; [...$('mType').children].forEach(x=>x.classList.toggle('on',x===b)); });
+  $('addBtn').onclick = () => openModal(null);
+  $('mCancel').onclick = closeModal;
+  $('modalScrim').onclick = closeModal;
+  $('modal').onsubmit = e => {
+    e.preventDefault();
+    const title = $('mTitle').value.trim(); if(!title) return;
+    const after = parseInt($('mAfter').value,10);
+    const stop = {id:uid(), title, age:$('mAge').value.trim(), type:mType, icon:mIcon, done:false, doneDate:null, journal:[]};
+    state.stops.splice(after+1, 0, stop);
+    save(); closeModal(); render(); toast(`${mIcon} New stop added`);
+  };
+
+  document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeModal(); closeSheet(); } });
+
+  // ---------- Backup / restore (copy-paste text, works everywhere) ----------
+  let boxMode = null;
+  function showBox(mode){
+    boxMode = mode; $('backupBox').style.display='block';
+    const t = $('backupText');
+    if(mode==='backup'){ t.value = JSON.stringify(state); $('backupAction').textContent='Copy'; t.select(); }
+    else { t.value=''; t.placeholder='Paste your backup here, then tap Restore'; $('backupAction').textContent='Restore'; t.focus(); }
+  }
+  $('backupBtn').onclick = () => showBox('backup');
+  $('restoreBtn').onclick = () => showBox('restore');
+  $('backupClose').onclick = () => { $('backupBox').style.display='none'; };
+  $('backupAction').onclick = async () => {
+    const t = $('backupText');
+    if(boxMode==='backup'){
+      try{ await navigator.clipboard.writeText(t.value); toast('Backup copied. Paste it in your notes.'); }
+      catch(e){ t.select(); toast('Select the text and copy it'); }
+    } else {
+      try{
+        const d = JSON.parse(t.value);
+        if(!d || !Array.isArray(d.stops)) throw 0;
+        state = d; save(); render(); $('backupBox').style.display='none'; toast('Road restored');
+      }catch(e){ toast("That doesn't look like a backup"); }
+    }
+  };
+  $('resetBtn').onclick = () => {
+    const b = $('resetBtn');
+    if(!b.dataset.armed){ b.dataset.armed='1'; b.textContent='Tap again: erase everything?'; setTimeout(()=>{b.dataset.armed='';b.textContent='Reset road';},4000); return; }
+    state = fresh(); save(); render(); b.dataset.armed=''; b.textContent='Reset road'; toast('Road reset');
+  };
+
+  // ---------- Confetti ----------
+  function confetti(type){
+    const colors = type==='giving' ? ['#4fd1c5','#a7f3d0','#fff','#f6c453'] : ['#f6c453','#ff9f43','#ff8f6b','#fff','#4fd1c5'];
+    const cx = innerWidth/2, cy = innerHeight*.55;
+    for(let i=0;i<70;i++){
+      const c = el('div','confetti');
+      c.style.background = colors[i%colors.length];
+      c.style.left = cx+'px'; c.style.top = cy+'px';
+      document.body.appendChild(c);
+      const a = Math.random()*Math.PI*2, v = 120+Math.random()*260;
+      const dx = Math.cos(a)*v, dy = Math.sin(a)*v - 180;
+      const anim = c.animate([
+        {transform:'translate(0,0) rotate(0)', opacity:1},
+        {transform:`translate(${dx}px,${dy+420}px) rotate(${Math.random()*720}deg)`, opacity:0}
+      ],{duration:1300+Math.random()*700, easing:'cubic-bezier(.2,.7,.4,1)'});
+      anim.onfinish = () => c.remove();
+    }
+  }
+
+  // ---------- Start ----------
+  let rt; addEventListener('resize', () => { clearTimeout(rt); rt=setTimeout(render,120); });
+  render();
+  // Scroll to the next stop so you land where you are on the road
+  setTimeout(() => {
+    const nxt = document.querySelector('.stop.next');
+    if(nxt && nextIndex() > 1) nxt.scrollIntoView({behavior:'smooth', block:'center'});
+  }, 300);
+})();
+</script>
+</body>
+</html>
